@@ -61,7 +61,9 @@ It creates an overlay over the directory, with the upper dir and working dir goi
 
 `mkdir -p /dev/shm/overlay/projects-upper /dev/shm/overlay/projects-work`
 
-`mount -t overlay overlay -o lowerdir=/data/projects,upperdir=/dev/shm/overlay/projects-upper,workdir=/dev/shm/overlay/projects-work /data/projects`
+`mount -t overlay overlay -o lowerdir=/data/projects,upperdir=/dev/shm/overlay/projects-upper,workdir=/dev/shm/overlay/projects-work /mnt/projects`
+
+`mount --bind /mnt/projects /data/projects`
 
 
 ### `rampipe unpin /path/to/dir` does this:
@@ -70,7 +72,7 @@ It syncs the data from RAM back to disk, and cleans the RAM up, freeing it.
 
 #### command sequense: 
 
-`unmount /path/to/thingy`
+`umount /path/to/thingy`
 
 `rsync -a --delete /mnt/ramdisk/thingy /path/to/thingy` 
 
