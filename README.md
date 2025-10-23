@@ -17,8 +17,6 @@ You see, when someone boots from a USB, the main bottleneck of the system instan
 
 The idea is to make the system faster by dynamicly moving files to RAM and syncing them back to disk based on how much the file is used. 
 
-The github repo for it is: **CREATE IT YOU DUMMASS!**
-
 ****
 
 # Architecture
