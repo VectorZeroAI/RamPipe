@@ -70,8 +70,6 @@ First we pause acsess to that file.
 
 Then we sync the changes back. (using rsync)
 
-Then we delete the whiteouts. (we need to do that manualy.) 
-
 Then we delete the upper and work dirs. (clean up.)
 
 Example commands: 
@@ -80,9 +78,7 @@ Example commands:
 
 `mount -o remount,ro /data/projects`
 
-`rsync -a --remove-source-files /dev/shm/overlay/projects-upper/ /data/projects/`
-
-`find /dev/shm/overlay/projects-upper -name '.wh.*' -type c -delete`
+`rsync -a --delete /dev/shm/overlay/projects-upper/ /data/projects/`
 
 `umount /data/projects` (if hit error, try:)
 
