@@ -70,7 +70,9 @@ It creates an overlay over the directory, with the upper dir and working dir goi
 
 It syncs the data from RAM back to disk, and cleans the RAM up, freeing it. 
 
-#### command sequense: 
+There are 2 prosedures, one for the --overlay argument and one for --move argument.
+
+#### command sequense *(for --move)*: 
 
 `umount /path/to/thingy`
 
@@ -79,6 +81,18 @@ It syncs the data from RAM back to disk, and cleans the RAM up, freeing it.
 *(if thingy is a dir, add / at the end)*
 
 `rm -rf /mnt/ramdisk/thingy`
+
+#### command sequense *(for --overlay)*:
+
+mount -o remount,ro /path/to/the/target/dir
+
+sync
+
+rsync -a --delete /dev/shm/overlay/{dirname}-upper/ /path/to/target/dir/
+
+umount /mnt/{dirname}
+
+rm -rf /dev/shm/overlay/{dirname}{upper,work}
 
 ### `rampipe status` does this: 
 
