@@ -114,6 +114,14 @@ It also ensures that on shutdown (a.k.a. on ExecStop ) it syncs all the data to 
 
 ---- 
 
-Technical notes: 
+# Technical notes: 
 
 Comunitaction between CLI *(`rampipe`)* and the demon *(`rampiped`)* happens via UNIX socket at /run/rampipe.sock
+
+
+# Requirements:
+
+overlayfs-tools
+rsync
+coreutils
+utils-linux
