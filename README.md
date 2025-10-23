@@ -57,11 +57,11 @@ It creates an overlay over the directory, with the upper dir and working dir goi
 
 #### The command sequense (manual way of doing it):
 
-(assuming projekts at /data/projekts is the dir you want to pin)
+(assuming projekts at /data/projects is the dir you want to pin)
 
-`mkdir -p /dev/shm/overlay-projekts/upper /dev/shm/overlay-projekts/work`
+`mkdir -p /dev/shm/overlay-projects/upper /dev/shm/overlay-projekts/work`
 
-`mount -t overlay overlay -o lowerdir=/data/projects,upperdir=/dev/shm/overlay-projekts/upper,workdir=/dev/shm/overlay-projekts/work /mnt/projects`
+`mount -t overlay overlay -o lowerdir=/data/projects,upperdir=/dev/shm/overlay-projects/upper,workdir=/dev/shm/overlay-projects/work /mnt/projects`
 
 `mount --bind /mnt/projects /data/projects`
 
