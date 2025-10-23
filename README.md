@@ -84,15 +84,15 @@ There are 2 prosedures, one for the --overlay argument and one for --move argume
 
 #### command sequense *(for --overlay)*:
 
-mount -o remount,ro /path/to/the/target/dir
+`mount -o remount,ro /path/to/the/target/dir`
 
-sync
+`sync`
 
-rsync -a --delete /dev/shm/overlay/{dirname}-upper/ /path/to/target/dir/
+`rsync -a --delete /dev/shm/overlay/{dirname}-upper/ /path/to/target/dir/`
 
-umount /mnt/{dirname}
+`umount /mnt/{dirname}`
 
-rm -rf /dev/shm/overlay/{dirname}{upper,work}
+`rm -rf /dev/shm/overlay/{dirname}{upper,work}`
 
 ### `rampipe status` does this: 
 
@@ -108,3 +108,9 @@ It syncs the data to disk periodicaly, and even allows batching to not stress th
 
 It also ensures that on shutdown (a.k.a. on ExecStop ) it syncs all the data to the disk, ensuring that nothing is lost. 
 
+
+---- 
+
+Technical notes: 
+
+Comunitaction between CLI *(`rampipe`)* and the demon *(`rampiped`)* happens via UNIX socket at /run/rampipe.sock
