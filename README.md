@@ -1,45 +1,105 @@
 # RamPipe
-Its a hot cache linux daemon, that dynamicly moves frequently written to directories to RAM via overlays and syncs back once usage becomes low again, in order to speed up set ups with slow disk. (e.g. USB based installs.)
+Its a hot cache linux daemon, that provides a CLI interface for moving files and directories to RAM, creating overlays, and managing persistanse, in order to speed up set ups with slow disk. (e.g. USB based installs.)
 
 --------
 
-# Architecture
+*Note that configuration is located in the rampipe.conf file in /var directory. Explanation to each parameter is inside of the config itself. (comments)*
 
-It creates overlays over directories that are written to often, and syncs back on shutdown or on lowering of the write rate.
+--------
 
-The overlays are based on the acsess rate (amount of acsesses / timeframe) .
+# Explanation
 
-Ovelays are a way to transfer the files writes to RAM efficiently and then leave it there. They are integrated into the kernel and are used to create live systems. 
+It provides this set of commands: 
 
-But what I use them for is: "smart caching"
+`rampipe pin /path/to/file --move`
 
-You see, when someone boots from a USB, the main bottleneck of the system instantly becomes the **disk read and write speeds**. 
+`rampipe pin /path/to/dir/ --move`
 
-The idea is to make the system faster by dynamicly moving file writes to RAM and syncing them back to disk based on how much the files are used. 
-(its directory based for now, and doesnt speed up reads for now, but I will add per file and read speed-up funktionality later on.)
+`rampipe pin /path/to/dir/ --overlay`
 
-****
+`rampipe unpin /path/to/dir`
 
-# Architecture
+`rampipe status`  
 
-The architecture is fairly simple *(for now)* :
+following this structure: 
 
-It consists of these modules: 
+`rampipe {action} [arguments]`
 
-1. **Monitoring** : fanotify is used to monitor the file operations. 
-2. **Rate saving/calculation** : python is used to calculate use rates per dir.
-3. **Overlay management** : Overlay management happens through a threash-hold based system. 
-4. **Syncback** : Syncback happens ether on use rate drop below a threshhold, or on shutdown. 
 
 ****
 
-## Monitoring
+# What the commands do:
 
-fanotify is used to track the activity per directory.
-*(via the python API)*
-## Rate saving/calculation
+### `rampipe pin /path/to/file --move` does this:
 
-Per directory (path) **EMA** *(Estimated moving average)* of writes .
+It copies the file to tmpfs and bind mounts the copy in tmpfs over the file on disk, so that operations with it happen on RAM.
+
+The command sequense: 
+
+`cp -r /path/to/file /mnt/ramdisk/`
+
+`mount --bind /mnt/ramdisk/dir /path/to/dir`
+
+### `rampipe pin /path/to/dir/ --move` does this:
+
+It copies the entire dir over to RAM the same way as the command above. 
+*(not very practical, but you may still want that if you dont want to figure out wich exact file causes the disk stress.)*
+
+#### command sequense: 
+
+`cp -r /path/to/dir /mnt/ramdisk/`
+
+`mount --bind /mnt/ramdisk/dir /path/to/dir`
+
+### `rampipe pin /path/to/dir/ --overlay` does this:
+
+It creates an overlay over the directory, with the upper dir and working dir going to tmpfs (RAM). 
+
+#### The command sequense (manual way of doing it):
+
+(assuming projekts at /data/projekts is the dir you want to pin)
+
+`mkdir -p /dev/shm/overlay/projects-upper /dev/shm/overlay/projects-work`
+
+`mount -t overlay overlay -o lowerdir=/data/projects,upperdir=/dev/shm/overlay/projects-upper,workdir=/dev/shm/overlay/projects-work /data/projects`
+
+
+### `rampipe unpin /path/to/dir` does this:
+
+It syncs the data from RAM back to disk, and cleans the RAM up, freeing it. 
+
+#### command sequense: 
+
+`unmount /path/to/thingy`
+
+`rsync -a --delete /mnt/ramdisk/thingy /path/to/thingy` 
+
+*(if thingy is a dir, add / at the end)*
+
+`rm -rf /mnt/ramdisk/thingy`
+
+### `rampipe status` does this: 
+
+It displays the current status ofthe rampipe demon, meaning that it shows what dirs and files are pinned, how much RAM each of them consum and how much total RAM is consumed.
+
+# What the demon does (in the background):
+
+Initialises the tmpfs and overlays as you configurate in the rampipe.conf file. 
+
+It keeps track of what directories and files are currently pinned via a json file, wich itself is pinned by default. 
+
+It syncs the data to disk periodicaly, and even allows batching to not stress the disk. *(its all configurable in the config file, but be carefull, if you batch the data too much, it will result in syncs taking longer then the timer between them.)*
+
+It also ensures that on shutdown (a.k.a. on ExecStop ) it syncs all the data to the disk, ensuring that nothing is lost. 
+
+
+
+
+
+
+
+---------------------------------------------------
+
 
 # Overlay management
 
