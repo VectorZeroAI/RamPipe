@@ -59,9 +59,9 @@ It creates an overlay over the directory, with the upper dir and working dir goi
 
 (assuming projekts at /data/projekts is the dir you want to pin)
 
-`mkdir -p /dev/shm/overlay/projects-upper /dev/shm/overlay/projects-work`
+`mkdir -p /dev/shm/overlay-projekts/upper /dev/shm/overlay-projekts/work`
 
-`mount -t overlay overlay -o lowerdir=/data/projects,upperdir=/dev/shm/overlay/projects-upper,workdir=/dev/shm/overlay/projects-work /mnt/projects`
+`mount -t overlay overlay -o lowerdir=/data/projects,upperdir=/dev/shm/overlay-projekts/upper,workdir=/dev/shm/overlay-projekts/work /mnt/projects`
 
 `mount --bind /mnt/projects /data/projects`
 
@@ -88,11 +88,13 @@ There are 2 prosedures, one for the --overlay argument and one for --move argume
 
 `sync`
 
-`rsync -a --delete /dev/shm/overlay/{dirname}-upper/ /path/to/target/dir/`
+`umount /path/to/target/dir`
 
 `umount /mnt/{dirname}`
 
-`rm -rf /dev/shm/overlay/{dirname}{upper,work}`
+`overlay merge -f -l /path/to/target/dir -u /dev/shm/overlay-{name}/upper`
+
+`rm -rf /dev/shm/overlay-{dirname}`
 
 ### `rampipe status` does this: 
 
