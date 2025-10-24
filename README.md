@@ -135,6 +135,14 @@ This servise does not support batching syncs for now.
 
 The data may be corrupted or lost on a crash, periodic syncs are only meant to minimise the damage of that.
 
+# Error management
+
+The error management is kind of simple: if one of the commands failed, abort, and report the error to the user. 
+
+Let the user fix it. 
+
+(Reboot fixes anything anyways, with a bit of dataloss, but that is not that big of problem, because the user can just sync back manualy, and then reboot. The user sees the error, meaning that the they know exactly at wich point everything went wrong, so the best way is to errase all the crap that bugged out by rebooting. manualy typing in rsync is still an option and is relatively easy.)
+
 # Requirements:
 
 python
