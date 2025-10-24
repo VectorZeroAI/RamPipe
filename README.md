@@ -36,9 +36,9 @@ It copies the file to tmpfs and bind mounts the copy in tmpfs over the file on d
 
 The command sequense: 
 
-`cp -r /path/to/file /mnt/ramdisk/`
+`cp /path/to/file /mnt/ramdisk/`
 
-`mount --bind /mnt/ramdisk/dir /path/to/dir`
+`mount --bind /mnt/ramdisk/file /path/to/file`
 
 ### `rampipe pin /path/to/dir/ --move` does this:
 
