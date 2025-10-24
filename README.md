@@ -59,15 +59,13 @@ It creates an overlay over the directory, with the upper dir and working dir goi
 
 #### The command sequense (manual way of doing it):
 
-(assuming projekts at /data/projects is the dir you want to pin)
-
 *CHECK FOR SUBMOUNTS FIRST, IF NONE FOUND, PROSEED.*
 
-`mkdir -p /dev/shm/overlay-projects/upper /dev/shm/overlay-projekts/work`
+`mkdir -p /dev/shm/overlay-{dirname}/upper /dev/shm/overlay-{dirname}/work`
 
-`mount -t overlay overlay -o lowerdir=/data/projects,upperdir=/dev/shm/overlay-projects/upper,workdir=/dev/shm/overlay-projects/work /mnt/projects`
+`mount -t overlay overlay -o lowerdir=/path/to/dir,upperdir=/dev/shm/overlay-{dirname}/upper,workdir=/dev/shm/overlay-{dirname}/work /mnt/{dirname}`
 
-`mount --bind /mnt/projects /data/projects`
+`mount --bind /mnt/{dirname} /path/to/dir`
 
 
 ### `rampipe unpin /path/to/dir` does this:
