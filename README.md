@@ -53,11 +53,15 @@ It copies the entire dir over to RAM the same way as the command above.
 
 ### `rampipe pin /path/to/dir/ --overlay` does this:
 
+*IMPORTATNT NOTE: FIRST CHECK IF THE DIRECTORY HAS SUBMOUNTS, ABORT IF IT DOES, PROSEED IF IT DOESNT.*
+
 It creates an overlay over the directory, with the upper dir and working dir going to tmpfs (RAM). 
 
 #### The command sequense (manual way of doing it):
 
 (assuming projekts at /data/projects is the dir you want to pin)
+
+*CHECK FOR SUBMOUNTS FIRST, IF NONE FOUND, PROSEED.*
 
 `mkdir -p /dev/shm/overlay-projects/upper /dev/shm/overlay-projekts/work`
 
@@ -105,7 +109,7 @@ Displays the current status of the RamPipe daemon — listing which directories 
 
 Initialises the tmpfs and overlays as you configurate in the rampipe.conf file. 
 
-It keeps track of what directories and files are currently pinned via a json file, wich itself is pinned by default. 
+It keeps track of what directories and files are currently pinned via a json file, wich itself is in the tmpfs, to avoid using more disk.
 
 It syncs the data to disk periodicaly, and even allows batching to not stress the disk. *(its all configurable in the config file, but be carefull, if you batch the data too much, it will result in syncs taking longer then the timer between them.)*
 
@@ -117,6 +121,20 @@ It also ensures that on shutdown (a.k.a. on ExecStop ) it syncs all the data to 
 # Technical notes: 
 
 Comunitaction between CLI *(`rampipe`)* and the demon *(`rampiped`)* happens via UNIX socket at /run/rampipe.sock
+
+The json file is on tmpfs.
+
+It is not synced back, since on everything is unpinned on shutdown. 
+
+This service doesnt allow to persist settings for now. 
+
+The programm consists of 2 executables: rampiped.py and rampipe.py , whereby: 
+rampiped.py is the background daemon. 
+rampipe.py is the CLI client.
+
+
+if --move or --overlay is not specified, default to --move. (because --move works regardles of directory or file, and overlay only works on directories.)
+
 
 
 # Requirements:
