@@ -122,9 +122,7 @@ It also ensures that on shutdown (a.k.a. on ExecStop ) it syncs all the data to 
 
 Comunitaction between CLI *(`rampipe`)* and the demon *(`rampiped`)* happens via UNIX socket at /run/rampipe.sock
 
-The json file is on tmpfs.
-
-It is not synced back, since on everything is unpinned on shutdown. 
+The json file is on tmpfs, it is not synced back, since on everything is unpinned on shutdown, wich leaves the file empty.  
 
 This service doesnt allow to persist settings for now. 
 
@@ -135,10 +133,13 @@ rampipe.py is the CLI client.
 
 if --move or --overlay is not specified, default to --move. (because --move works regardles of directory or file, and overlay only works on directories.)
 
+This servise does not support batching syncs for now. 
 
+The data may be corrupted or lost on a crash, periodic syncs are only meant to minimise the damage of that.
 
 # Requirements:
 
+python
 overlayfs-tools
 rsync
 coreutils
