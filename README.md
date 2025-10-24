@@ -102,7 +102,7 @@ There are 2 prosedures, one for the --overlay argument and one for --move argume
 
 ### `rampipe status` does this: 
 
-Displays the current status of the RamPipe daemon — listing which directories and files are pinned, how much RAM each consumes, and the total RAM usage.
+Displays the current status of the RamPipe daemon — listing which directories and files are pinned, how much RAM each consumes, and the total RAM consumed by the daemon.
 
 
 # What the demon does (in the background):
