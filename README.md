@@ -88,8 +88,6 @@ There are 2 prosedures, one for the --overlay argument and one for --move argume
 
 #### command sequense *(for --overlay)*:
 
-`mount -o remount,ro /path/to/the/target/dir`
-
 `sync`
 
 `umount /path/to/target/dir`
@@ -109,9 +107,9 @@ Displays the current status of the RamPipe daemon — listing which directories 
 
 Initialises the tmpfs and overlays as you configurate in the rampipe.conf file. 
 
-It keeps track of what directories and files are currently pinned via a json file, wich itself is in the tmpfs, to avoid using more disk.
+It keeps track of what directories and files are currently pinned via a json file, wich is on the tmpfs.
 
-It syncs the data to disk periodicaly, and even allows batching to not stress the disk. *(its all configurable in the config file, but be carefull, if you batch the data too much, it will result in syncs taking longer then the timer between them.)*
+It syncs the data to disk periodicaly, and even allows batching to not stress the disk. *(its all configurable in the config file)*
 
 It also ensures that on shutdown (a.k.a. on ExecStop ) it syncs all the data to the disk, ensuring that nothing is lost. 
 
@@ -122,7 +120,7 @@ It also ensures that on shutdown (a.k.a. on ExecStop ) it syncs all the data to 
 
 Comunitaction between CLI *(`rampipe`)* and the demon *(`rampiped`)* happens via UNIX socket at /run/rampipe.sock
 
-The json file is on tmpfs, it is not synced back, since on everything is unpinned on shutdown, wich leaves the file empty.  
+JSON file is never synced back, because there is no need. In an even of a crash, the system will reboot, meaning that all the mounts will be remounted, meaning that the set up overlays and moves are gone anyways. There is no need to do anything here.
 
 This service doesnt allow to persist settings for now. 
 
